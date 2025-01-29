@@ -1,0 +1,29 @@
+class Graph:
+    def __init__(self):  
+        self.graph = {
+            'A': [('B', 3), ('C', 1)],
+            'B': [('A', 3), ('C', 7), ('D', 5), ('E', 1)],
+            'C': [('A', 1), ('B', 7), ('D', 2)],
+            'D': [('B', 5), ('C', 2), ('E', 7)],
+            'E': [('B', 1), ('D', 7)]
+        }
+    def dls(self, node, depth, path, visited):
+        path.append(node)  
+        visited.add(node)
+        if depth <= 0:
+            return
+        if node in self.graph:
+            for neighbor, _ in self.graph[node]:  
+                if neighbor not in visited:
+                    self.dls(neighbor, depth - 1, path, visited)
+    def depth_limited_search(self, start, depth_limit):
+        visited = set()
+        path = []
+        self.dls(start, depth_limit, path, visited)
+        return path  
+graph = Graph()
+start = 'A'
+depth_limit = 2
+visited_nodes = graph.depth_limited_search(start, depth_limit)
+for node in visited_nodes:
+    print(node)
