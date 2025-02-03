@@ -1,0 +1,57 @@
+"""
+0% - 20%: Too Dry
+20% - 40%: Low Moisture
+40% - 60%: Optimal 
+60% - 80%: High Moisture
+Above 80%: Over-Saturation
+"""
+
+"""
+Agent: AgriculturalAgent 
+Percepts: Soil Moisture, Weather, Pest Presence
+Environment: Agricultural Field
+Sensors: Soil Moisture Sensor, Weather Sensor, Pest Detector
+Actuators: Irrigation System, Pesticide Sprayer
+Actions: Turn irrigation ON/OFF, Apply Pesticide, Do nothing
+"""
+
+import random
+class AgriculturalAgent:
+    def __init__(self, soil_moisture, weather, pest_presence):
+        self.soil_moisture = soil_moisture  
+        self.weather = weather  #rainy,sunny,cloudy
+        self.pest_presence = pest_presence  #true or false
+        self.goal = "Optimize Crop Yield" #goal of goal based agent
+        
+    def decide_irrigation(self): #decides whether irrigation is needed or not
+        if self.soil_moisture < 40 and self.weather!= "Rainy": 
+            print("Irrigation Required") #if pest_presence=true, apply pesticide
+            return "ON"
+        else:
+            print("Irrigation Not Needed") #if pest_presence=false. no pesticide needed
+            return "OFF"
+        
+    def decide_pesticide_application(self):  #displays current field conditions and takes actions accordingly
+        if self.pest_presence:
+            print("Pesticide Required")
+            return "Pesticide Applied"
+        else:
+            print("Pesticide Not Needed")
+            return "No Pesticide Applied"
+        
+    def monitor_conditions(self):
+        print(f"Soil Moisture Level: {self.soil_moisture}%")
+        print(f"Weather Condition: {self.weather}")
+        print(f"Pest Presence: {'Yes' if self.pest_presence else 'No'}")
+        print("Actions:")
+        irrigation_action = self.decide_irrigation()
+        pesticide_action = self.decide_pesticide_application()
+        return irrigation_action, pesticide_action
+    
+if __name__ == "__main__":
+    #taking random values and checking field conditions
+    soil_moisture = random.randint(20, 80)  
+    weather = random.choice(["Rainy", "Sunny", "Cloudy"]) 
+    pest_presence = random.choice([True, False])  
+    agent = AgriculturalAgent(soil_moisture, weather, pest_presence)
+    agent.monitor_conditions()
