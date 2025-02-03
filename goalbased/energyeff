@@ -1,0 +1,69 @@
+"""
+Energy Efficiency-Design a goal-based agent for energy efficiency in a smart home. 
+The agent’s goal is to minimize energy consumption while maintaining user comfort. 
+The agent can control devices like lights, thermostats, and appliances. 
+"""
+
+"""
+Agent - SmartHomeAgent class (Goal: Reduce energy consumption)
+Percepts - Room Temperature, Time of Day, Room Occupancy
+Environment - Smart home with lights, thermostat, and appliances
+Sensors - Temperature Sensor, Time Sensor, Motion Sensor
+Actuators - Smart Lighting System, Smart Thermostat, Smart Appliances
+Actions - Turn ON/OFF lights, Adjust thermostat, Control appliances
+"""
+
+import random
+class SmartHomeAgent: 
+    def __init__(self, temperature, time_of_day, occupancy):
+        self.temperature = temperature  #cold,warm,hot
+        self.time_of_day = time_of_day  #morning,evening,night
+        self.occupancy = occupancy  #true(room occupied) or false (empty)
+        self.goal = "Minimize Energy Consumption while Maintaining Comfort"  #goal
+
+    def control_lights(self):  #whether to turn on, off, dim lights.
+        if not self.occupancy:
+            print("Lights OFF: No one is in the room.")  #if room is empty(occupancy=False) - OFF lights
+            return "Lights OFF"
+        elif self.time_of_day == "Night":  #if it is night and room is occupied-dim lights.
+            print("Lights DIMMED: Saving energy at night.")
+            return "Lights DIMMED"
+        else:
+            print("Lights ON: Room is occupied.")  #if it is mrng or evng and room is occupied - ON lights.
+            return "Lights ON"
+
+    def control_thermostat(self):  #adjusts thermostat based on room temperature
+        if self.temperature == "Cold":   #if room is cold - Increase temperature 
+            print("Thermostat INCREASED: Room is cold.")
+            return "Increase Temperature"
+        elif self.temperature == "Hot":  #if room is hot - Decrease temperature to cool room
+            print("Thermostat DECREASED: Room is hot.")
+            return "Decrease Temperature"
+        else:  #if room is at a comfortable temperature (Warm) → No changes needed.
+            print("Thermostat OPTIMAL: No changes needed.")
+            return "Maintain Temperature"
+
+    def control_appliances(self):
+        if not self.occupancy:
+            print("Appliances OFF: No one is in the room.")   #if room is empty (occupancy=False) - Turn OFF all
+            return "Appliances OFF"
+        else:
+            print("Appliances ON: Room is occupied.")
+            return "Appliances ON"
+
+    def monitor_smart_home(self):
+        print(f"Room Temperature: {self.temperature}")
+        print(f"Time of Day: {self.time_of_day}")
+        print(f"Room Occupancy: {'Occupied' if self.occupancy else 'Empty'}")
+        print("Actions:")
+        light_action = self.control_lights()
+        thermostat_action = self.control_thermostat()
+        appliance_action = self.control_appliances()
+        return light_action, thermostat_action, appliance_action
+
+if __name__ == "__main__":
+    temperature = random.choice(["Cold", "Warm", "Hot"])
+    time_of_day = random.choice(["Morning", "Evening", "Night"])
+    occupancy = random.choice([True, False])
+    agent = SmartHomeAgent(temperature, time_of_day, occupancy)
+    agent.monitor_smart_home()
