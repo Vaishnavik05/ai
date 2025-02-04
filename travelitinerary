@@ -1,0 +1,55 @@
+"""
+Agent-TravelPlanner class
+Percepts-User budget, available travel time, destinations, activities
+Environment-set of travel options including destinations, costs, and durations
+Sensors-User input sensors, travel cost estimators, travel time estimators
+Actuators-Utility calculator, recommendation system
+Actions-Filters trips, calculates utility scores, selects the best itinerary
+"""
+
+"""
+More activities,lower cost,less travel time - Higher score
+"""
+
+import random
+
+class TravelPlanner:
+    def __init__(self, budget, time_available):
+        self.destinations = {  # Dictionary stores available destinations in form of key-value pairs
+            "Paris": ["Eiffel Tower", "Louvre Museum"],
+            "New York": ["Statue of Liberty", "Times Square"],
+            "Tokyo": ["Shibuya Crossing", "Mount Fuji"],
+            "Dubai": ["Burj Khalifa", "Desert Safari"],
+            "Rome": ["Colosseum", "Vatican City"]
+        }
+        self.budget = budget
+        self.time_available = time_available   #goal: Recommend best itinerary
+
+    def plan_trip(self):  # Calculates and selects best trip based on user input
+        best_trip = None
+        best_score = 0
+
+        for city, activities in self.destinations.items():
+            cost = random.randint(200, 3000)   # Random travel cost
+            travel_time = random.randint(1, 10)  # Random travel time
+
+            if cost <= self.budget and travel_time <= self.time_available:   # If cost, travel_time is within budget, available hours, trip is considered
+                score = len(activities) * 10 + (5000 - cost) // 500 + (10 - travel_time) * 5
+
+                if score > best_score:   # If new trip has better score than current one, it updates the best trip.
+                    best_score = score
+                    best_trip = (city, activities, cost, travel_time, score)
+
+        if best_trip:
+            print("\nRecommended Trip:")
+            print(f"Destination: {best_trip[0]}")
+            print(f"Activities: {', '.join(best_trip[1])}")
+            print(f"Cost: ${best_trip[2]}")
+            print(f"Travel Time: {best_trip[3]} hours")
+            print(f"Utility Score: {best_trip[4]}")
+        else:
+            print("No suitable trips found within budget and time constraints.")
+budget = int(input("Enter your budget ($): "))
+time_available = int(input("Enter available travel time (hours): "))
+planner = TravelPlanner(budget, time_available)
+planner.plan_trip()
