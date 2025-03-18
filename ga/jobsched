@@ -1,0 +1,49 @@
+import random
+import numpy as np
+num_jobs = 6
+num_machines = 3
+population_size = 50
+num_generations = 100
+mutation_rate = 0.1
+processing_times = [random.randint(1, 10) for _ in range(num_jobs)]
+def initialize_population():
+    return [np.random.randint(0, num_machines, num_jobs).tolist() for _ in range(population_size)]
+# Fitness function
+def fitness(chromosome):
+    machine_times = [0] * num_machines
+    for job, machine in enumerate(chromosome):
+        machine_times[machine] += processing_times[job]
+    return 1 / max(machine_times)  
+def select_parents(population):
+    sorted_population = sorted(population, key=fitness, reverse=True)
+    return sorted_population[:2]
+# Crossover 
+def crossover(parent1, parent2):
+    point1, point2 = sorted(random.sample(range(num_jobs), 2))
+    child1 = parent1[:point1] + parent2[point1:point2] + parent1[point2:]
+    child2 = parent2[:point1] + parent1[point1:point2] + parent2[point2:]
+    return child1, child2
+# Mutation
+def mutate(chromosome):
+    if random.random() < mutation_rate:
+        idx = random.randint(0, num_jobs - 1)
+        chromosome[idx] = random.randint(0, num_machines - 1)
+    return chromosome
+def genetic_algorithm():
+    population = initialize_population()
+    for _ in range(num_generations):
+        parents = select_parents(population)
+        offspring = []
+        for _ in range(population_size // 2):
+            child1, child2 = crossover(parents[0], parents[1])
+            offspring.append(mutate(child1))
+            offspring.append(mutate(child2))
+        # Replace weakest solutions with new offspring
+        population = sorted(population, key=fitness, reverse=True)[:population_size - len(offspring)] + offspring
+    best_solution = max(population, key=fitness)
+    best_makespan = 1 / fitness(best_solution)
+    return best_solution, best_makespan, processing_times
+best_schedule, best_time, random_processing_times = genetic_algorithm()
+print("Processing Times:", random_processing_times)
+print("Best Job Schedule:", best_schedule)
+print("Minimum Completion Time:", best_time)
