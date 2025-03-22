@@ -1,0 +1,75 @@
+import math
+
+def minimax(depth, node_index, maximizing_player, values, alpha, beta, height):
+    if depth == height:
+        return values[node_index]
+
+    if maximizing_player:
+        best = -math.inf
+        for i in range(3):  # Each max node has 3 children 
+            val = minimax(depth + 1, node_index * 3 + i, False, values, alpha, beta, height)
+            best = max(best, val)
+            alpha = max(alpha, best)
+            if beta <= alpha:
+                break  
+        return best
+    else:
+        best = math.inf
+        for i in range(3):  # Each min node has 3 children 
+            val = minimax(depth + 1, node_index * 3 + i, True, values, alpha, beta, height)
+            best = min(best, val)
+            beta = min(beta, best)
+            if beta <= alpha:
+                break  
+        return best
+
+values = [12, 10, 3, 5, 8, 10, 11, 2, 12]
+tree_height = math.log(len(values), 3)
+
+# optimal value using Minimax
+optimal_value = minimax(0, 0, True, values, -math.inf, math.inf, int(tree_height))
+print("Optimal value:", optimal_value)
+
+
+
+
+
+
+
+
+
+
+
+import math
+
+def minimax(depth, node_index, maximizing_player, values, alpha, beta, height):
+    if depth == height:
+        return values[node_index]
+
+    if maximizing_player:
+        best = -math.inf
+        for i in range(2):  # Each MAX node has 2 children
+            val = minimax(depth + 1, node_index * 2 + i, False, values, alpha, beta, height)
+            best = max(best, val)
+            alpha = max(alpha, best)
+            if beta <= alpha:
+                break  
+        return best
+    else:
+        best = math.inf
+        for i in range(2):  # Each min node has 2 children
+            val = minimax(depth + 1, node_index * 2 + i, True, values, alpha, beta, height)
+            best = min(best, val)
+            beta = min(beta, best)
+            if beta <= alpha:
+                break  
+        return best
+
+values = [5, -1, 4, 3, -2, -5, 9, 8, 6, 1, -4, 2, 4, 7, 3, -3]
+
+# Tree height (log2-binary tree)
+tree_height = math.log2(len(values))
+
+# optimal value using Minimax
+optimal_value = minimax(0, 0, True, values, -math.inf, math.inf, int(tree_height))
+print("Optimal value:", optimal_value)
