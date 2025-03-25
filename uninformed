@@ -1,0 +1,125 @@
+# shortest path
+import heapq
+def dijkstra(graph, start, end):
+    pq = [(0, start)]  
+    distances = {node: float('inf') for node in graph}
+    distances[start] = 0
+    parents = {start: None}
+    while pq:
+        cur_distance, cur_node = heapq.heappop(pq)
+        if cur_node == end:
+            path = []
+            while cur_node:
+                path.append(cur_node)
+                cur_node = parents[cur_node]
+            return list(reversed(path)), distances[end]
+        for neighbor, weight in graph[cur_node]:
+            distance = cur_distance + weight
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                parents[neighbor] = cur_node
+                heapq.heappush(pq, (distance, neighbor))
+    return None, float('inf')
+graph = {
+    'a': [('b', 9), ('c', 4), ('d', 7)],
+    'b': [('e', 11)],
+    'c': [('e', 17), ('f', 12)],
+    'd': [('f', 14)],
+    'e': [('z', 5)],
+    'f': [('z', 9)],
+    'z': []
+}
+start, end = 'a', 'z'
+path, cost = dijkstra(graph, start, end)
+print("Shortest Path:", path)
+print("Cost:", cost)
+
+
+#bfs
+from collections import deque
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            print(node, end=" ")
+            visited.add(node)
+            for neighbor, _ in graph[node]:  
+                if neighbor not in visited:
+                    queue.append(neighbor)
+print("BFS Traversal:")
+bfs(graph, 'a')
+
+
+#dfs
+def dfs(graph, start, visited=None):
+    if visited is None:
+        visited = set()
+    print(start, end=" ")
+    visited.add(start)
+    for neighbor, _ in graph[start]:  
+        if neighbor not in visited:
+            dfs(graph, neighbor, visited)
+print("DFS Traversal:")
+dfs(graph, 'a')
+
+
+#detect cycle
+def detect_cycle(graph):
+    visited = set()
+    rec_stack = set()
+    def dfs(node):
+        if node in rec_stack:  
+            return True
+        if node in visited:
+            return False
+        visited.add(node)
+        rec_stack.add(node)
+        for neighbor, _ in graph[node]:
+            if dfs(neighbor):
+                return True
+        rec_stack.remove(node)
+        return False
+    for node in graph:
+        if dfs(node):
+            return True
+    return False
+print("Cycle Detected:", detect_cycle(graph))
+
+
+#graph coloring
+def is_safe(node, color, graph, colors):
+    for neighbor in graph[node]:  
+        if neighbor in colors and colors[neighbor] == color:
+            return False
+    return True
+def graph_coloring(graph, max_colors):
+    color_names = ["Red", "Green"]
+    colors = {}
+    def color_node(node):
+        if node in colors:
+            return True
+        for i in range(min(max_colors, len(color_names))):
+            color = color_names[i]
+            if is_safe(node, color, graph, colors):
+                colors[node] = color
+                if all(color_node(neighbor) for neighbor in graph[node]):
+                    return True
+                del colors[node]  
+        return False
+    for node in graph:
+        if node not in colors and not color_node(node):
+            return None  
+    return colors
+graph = {
+    'a': ['b', 'c', 'd'],
+    'b': ['a', 'e'],
+    'c': ['a', 'e', 'f'],
+    'd': ['a', 'f'],
+    'e': ['b', 'c', 'z'],
+    'f': ['c', 'd', 'z'],
+    'z': ['e', 'f']
+}
+colors = graph_coloring(graph, 2)
+print("Node Colors:", colors)
