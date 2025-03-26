@@ -1,0 +1,83 @@
+#1st ques
+def minimax(node, is_max, values):
+    if node in values:
+        return values[node], [node] 
+    children = tree[node]
+    best_path = []
+    if is_max:
+        best_value = float('-inf')
+        for child in children:
+            child_value, child_path = minimax(child, False, values)
+            if child_value > best_value:
+                best_value = child_value
+                best_path = [node] + child_path
+    else:
+        best_value = float('inf')
+        for child in children:
+            child_value, child_path = minimax(child, True, values)
+            if child_value < best_value:
+                best_value = child_value
+                best_path = [node] + child_path
+    return best_value, best_path
+
+tree = {
+    'A': ['B1', 'B2', 'B3'],
+    'B1': ['C1', 'C2', 'C3'],
+    'B2': ['C4', 'C5', 'C6'],
+    'B3': ['C7', 'C8', 'C9']
+}
+values = {
+    'C1': 12, 'C2': 10, 'C3': 3,
+    'C4': 5, 'C5': 8, 'C6': 10,
+    'C7': 11, 'C8': 2, 'C9': 12
+}
+optimal_value, optimal_path = minimax('A', True, values)
+print(f"Optimal Value: {optimal_value}")
+print(f"Path: {' -> '.join(optimal_path)}")
+
+
+
+
+
+
+
+
+
+#2nd question
+
+def minimax(node, is_max):
+    if node in leaf_values:
+        return leaf_values[node], [node]  
+    best_value = float('-inf') if is_max else float('inf')
+    best_path = []
+    for child in tree.get(node, []):
+        value, path = minimax(child, not is_max)
+        if (is_max and value > best_value) or (not is_max and value < best_value):
+            best_value, best_path = value, [node] + path
+    return best_value, best_path
+tree = {
+    "A": ["B1", "B2"],
+    "B1": ["C1", "C2"],
+    "B2": ["C3", "C4"],
+    "C1": ["D1", "D2"],
+    "C2": ["D3", "D4"],
+    "C3": ["D5", "D6"],
+    "C4": ["D7", "D8"],
+    "D1": ["E1", "E2"],
+    "D2": ["E3", "E4"],
+    "D3": ["E5", "E6"],
+    "D4": ["E7", "E8"],
+    "D5": ["E9", "E10"],
+    "D6": ["E11", "E12"],
+    "D7": ["E13", "E14"],
+    "D8": ["E15", "E16"],
+}
+leaf_values = {
+    "E1": 5, "E2": -1, "E3": 4, "E4": 3,
+    "E5": -2, "E6": -5, "E7": 9, "E8": 8,
+    "E9": 6, "E10": -4, "E11": 2, "E12": 7,
+    "E13": -3, "E14": 0, "E15": 1, "E16": -6
+}
+optimal_value, optimal_path = minimax("A", True)
+print(f"Optimal Value: {optimal_value}")
+print(f"Path: {' → '.join(optimal_path)}")
